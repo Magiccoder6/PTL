@@ -1,0 +1,31 @@
+@startuml
+
+class User {
+    -id: int
+    -username: string
+    -password: string
+    +login(username: string, password: string): string
+    +logout(): void
+}
+
+class Passenger {
+    +viewBusLocation(): void
+    +reportDriver(): void
+    +addRating(): void
+}
+
+class Driver {
+    +updateBusLocation(newLocation: string): void
+    +viewPassengersLocation(): string
+}
+
+class Administrator {
+    +addBus(): void
+    +removeBus(): void
+}
+
+User <|-- Passenger: extends
+User <|-- Driver: extends
+User <|-- Administrator: extends
+
+@enduml
