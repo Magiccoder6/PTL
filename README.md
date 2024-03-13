@@ -14,3 +14,5 @@ Public Transport Locator
 1. To build the database run the following command (**flask --app app init-db**) 
 1. Run application by using the following command (**flask --app src/app run --debug**) 
 1. The App link will be the command terminal example (**http://127.0.0.1**)
+
+![Capture](https://github.com/Magiccoder6/PTL/assets/70528903/2e5b08b0-b9c5-48d0-88e6-324cabf05be0)
