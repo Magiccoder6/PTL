@@ -1,3 +1,17 @@
 .themeColor{
     color: #59E4A8;
 }
+
+::-webkit-scrollbar {
+    width: 12px;               /* width of the entire scrollbar */
+  }
+  
+::-webkit-scrollbar-track {
+    background: white;        /* color of the tracking area */
+  }
+  
+::-webkit-scrollbar-thumb {
+    background-color: #59E4A8;    /* color of the scroll thumb */
+    border-radius: 20px;       /* roundness of the scroll thumb */
+    border: 3px solid white;  /* creates padding around scroll thumb */
+  }

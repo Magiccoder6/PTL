@@ -1,38 +1,74 @@
 import functools
 
 from flask import (
-    Blueprint, flash, g, redirect, render_template, request, session, url_for
+    Blueprint, flash, g, jsonify, redirect, render_template, request, session, url_for
 )
 from werkzeug.security import check_password_hash, generate_password_hash
 
 from app.db import get_db
+from app.exceptions import InvalidAPIUsage
 
 bp = Blueprint('auth', __name__, url_prefix='/')
 
 @bp.route('/', methods=('GET', 'POST'))
-def login():
+def login_registration():
+    
+    return render_template('login_registration.html')
+
+@bp.route('/login', methods=('GET', 'POST'))
+def submit_login():
     if request.method == 'POST':
-        username = request.form['username']
+        email = request.form['email']
         password = request.form['password']
         db = get_db()
-        error = None
         user = db.execute(
-            'SELECT * FROM user WHERE username = ?', (username,)
+            'SELECT * FROM users WHERE email = ?', (email,)
         ).fetchone()
 
         if user is None:
-            error = 'Incorrect username.'
-        elif not check_password_hash(user['password'], password):
-            error = 'Incorrect password.'
+            raise InvalidAPIUsage(message='Incorrect email.', status_code=400)
+        elif not check_password_hash(user['pass'], password):
+            raise InvalidAPIUsage(message='Incorrect password.', status_code=400)
+        
+        session.clear()
+        session['user_id'] = user['id']
+        return jsonify({'message': 'login success'})
 
-        if error is None:
-            session.clear()
-            session['user_id'] = user['id']
-            return redirect(url_for('index'))
+@bp.route('/register', methods=('GET', 'POST'))
+def submit_registration():
+    if request.method == 'POST':
+        email = request.form['email']
+        firstName = request.form['firstName']
+        lastName = request.form['lastName']
+        userRole = request.form['userRole']
+        password = request.form['password']
 
-        flash(error)
+        db = get_db()
 
-    return render_template('login_registration.html')
+        try:
+            db.execute(
+                "INSERT INTO users (email, firstName, lastName, userRole, pass) VALUES (?, ?, ?, ?, ?)",
+                (email, firstName, lastName, userRole, generate_password_hash(password)),
+            )
+            db.commit()
+        except db.IntegrityError:
+            raise InvalidAPIUsage(message=f"User {email} is already registered.", status_code=400)
+        except Exception as e:
+            print(e)
+            raise InvalidAPIUsage(message=e.__dict__, status_code=500)
+        
+    return jsonify({'message': 'success'})
+
+@bp.before_app_request
+def load_logged_in_user():
+    user_id = session.get('user_id')
+
+    if user_id is None:
+        g.user = None
+    else:
+        g.user = get_db().execute(
+            'SELECT * FROM users WHERE id = ?', (user_id,)
+        ).fetchone()
 
 @bp.route('/logout')
 def logout():

@@ -2,9 +2,6 @@
 {% block title %}Login/ Register{% endblock %}
 {% block content %}
 <div class="login-wrap">
-	{% for message in get_flashed_messages() %}
-    <div class="flash">{{ message }}</div>
-  	{% endfor %}
 	<!-- Login 8 - Bootstrap Brain Component -->
 <section class="bg-light p-3 p-md-4 p-xl-5">
 	<div class="container">
@@ -29,10 +26,17 @@
 						</div>
 					  </div>
 					</div>
-
+					<!--If these is error display message-->
+					{% with errors = get_flashed_messages(category_filter=["error"]) %}
+						{% if errors %}
+							{% for message in errors %}
+								<div class="alert alert-danger" role="alert">{{ message }}</div>
+							{% endfor %}
+						{% endif %}
+					{% endwith %}
 					<div id="carousel1" class="carousel slide" data-interval="false">
 						<div class="carousel-inner">
-						  <div class="carousel-item active" style="height: 60vh;"><!--Login-->
+						  <div style="overflow: auto;" class="carousel-item active" style="height: 60vh;"><!--Login-->
 							<h4 class="text-center mb-4">Welcome back you've been missed!</h4>
 							<div class="row">
 								<div class="col-12">
@@ -47,7 +51,7 @@
 								  <p class="text-center mt-4 mb-5">Or sign in with</p>
 								</div>
 							  </div>
-							  <form action="#!">
+							  <form id="login_form" method="post">
 								<div class="row gy-3 overflow-hidden">
 								  <div class="col-12">
 									<div class="form-floating mb-3">
@@ -71,7 +75,7 @@
 								  </div>
 								  <div class="col-12">
 									<div class="d-grid">
-									  <button class="btn btn-dark btn-lg" type="submit">Log in now</button>
+									  <button class="btn btn-dark btn-lg" type="submit">Log in</button>
 									</div>
 								  </div>
 								</div>
@@ -85,19 +89,27 @@
 								</div>
 							  </div>
 						  </div>
-						  <div class="carousel-item" style="height: 60vh;"><!--Register-->
+						  <div class="carousel-item" style="height: 60vh; overflow: auto;"><!--Register-->
 							<h4 class="text-center mb-4">Register Now</h4>
-							  <form action="#!">
+							  <form id="register_form" method="post">
 								<div class="row gy-3 overflow-hidden">
 									<div class="col-12">
+											<input type="radio" class="btn-check" name="userRole" id="passenger" value="PASSENGER" autocomplete="off" checked>
+											<label class="btn btn-outline-primary" for="passenger">Passenger <i class="bi bi-person-raised-hand"></i></label>
+
+											<input type="radio" class="btn-check" name="userRole" id="driver" value="DRIVER" autocomplete="off">
+											<label class="btn btn-outline-warning" for="driver">Driver <i class="bi bi-taxi-front-fill"></i></label>
+									</div>
+									
+									<div class="col-12">
 									<div class="form-floating mb-3">
-										<input type="text" class="form-control" name="email" id="firstName" placeholder="Sam" required>
+										<input type="text" class="form-control" name="firstName" id="firstName" placeholder="Sam" required>
 										<label for="firstName" class="form-label">Firstname</label>
 									</div>
 									</div>
 									<div class="col-12">
 										<div class="form-floating mb-3">
-											<input type="text" class="form-control" name="email" id="lastName" placeholder="Doe" required>
+											<input type="text" class="form-control" name="lastName" id="lastName" placeholder="Doe" required>
 											<label for="lastName" class="form-label">Lastname</label>
 										</div>
 									</div>
