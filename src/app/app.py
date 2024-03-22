@@ -11,4 +11,5 @@ def login_register():
 
 @app.errorhandler(InvalidAPIUsage)
 def invalid_api_usage(e):
+    print(e)
     return jsonify(e.to_dict()), e.status_code

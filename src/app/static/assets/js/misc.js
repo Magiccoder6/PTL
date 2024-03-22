@@ -30,6 +30,7 @@ export function callAPI(requestType, endpoint, formData){
                 var response = JSON.parse(xhr.responseText);
                 resolve(response)
             } else {
+                console.log(xhr.responseText)
                 var error = JSON.parse(xhr.responseText);
                 reject(error.message)
             }

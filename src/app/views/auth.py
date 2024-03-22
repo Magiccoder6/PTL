@@ -11,15 +11,19 @@ from app.exceptions import InvalidAPIUsage
 bp = Blueprint('auth', __name__, url_prefix='/')
 
 @bp.route('/', methods=('GET', 'POST'))
-def login_registration():
-    
-    return render_template('login_registration.html')
+def sign_in():    
+    return render_template('sign_in.html')
+
+@bp.route('/sign_up', methods=('GET', 'POST'))
+def sign_up():    
+    return render_template('sign_up.html')
 
 @bp.route('/login', methods=('GET', 'POST'))
 def submit_login():
     if request.method == 'POST':
         email = request.form['email']
         password = request.form['password']
+        print(email)
         db = get_db()
         user = db.execute(
             'SELECT * FROM users WHERE email = ?', (email,)
@@ -73,13 +77,13 @@ def load_logged_in_user():
 @bp.route('/logout')
 def logout():
     session.clear()
-    return redirect(url_for('index'))
+    return redirect(url_for('auth.sign_in'))
 
 def login_required(view):
     @functools.wraps(view)
     def wrapped_view(**kwargs):
         if g.user is None:
-            return redirect(url_for('auth.login'))
+            return redirect(url_for('auth.sign_in'))
 
         return view(**kwargs)
 

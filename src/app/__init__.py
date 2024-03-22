@@ -1,6 +1,8 @@
 from flask import Flask
 import os
 
+from app.views import dashboard
+
 
 def create_app(test_config=None):
     app = Flask(__name__, instance_relative_config=True)
@@ -21,6 +23,7 @@ def create_app(test_config=None):
 
     from .views import auth
     app.register_blueprint(auth.bp)
+    app.register_blueprint(dashboard.bp)
 
     return app
 
